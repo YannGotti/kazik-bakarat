@@ -1,14 +1,14 @@
 import os
 
 from aiogram import types
-from aiogram.dispatcher.filters import CommandStart
+from aiogram.dispatcher.filters import CommandStart, Text
 
 from loader import dp, bot
 from messages import *
 
 from keyboards.default.user import getUserKeyboard
 
-from services.service import userExists, addUser, getTwitchName
+from services.service import userExists, addUser, getTwitchName, getMoneyUserString
 from states.userSettings import UserSetting
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -36,6 +36,7 @@ async def start(message: types.Message):
     if twitch_name is None:
         await message.answer(ENTER_TWITCH_NICKNAME)
         await UserSetting.TwitchName.set()
+
 
 
     

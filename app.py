@@ -8,8 +8,9 @@ from services.service import *
 
 async def set_default_commands(dp_local):
     await dp_local.bot.set_my_commands([
-        BotCommand("change_twitch", "Поменять никнейм Twitch"),
-        BotCommand("menu", "Вызвать меню")
+        BotCommand("play", "Играть"),
+        BotCommand("profile", "Вызвать меню профиля"),
+        BotCommand("change_twitch", "Поменять никнейм Twitch")
     ])
 
 
@@ -24,6 +25,6 @@ if __name__ == '__main__':
 
     # generate_lotteries_in_file(1000, "lotteries.txt")
     # generate_images_if_not_exists_from_file("lotteries.txt")
-    #addGame()
+    addGame()
 
     executor.start_polling(dp, on_shutdown=on_shutdown, skip_updates=True, on_startup=set_default_commands)
