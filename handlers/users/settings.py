@@ -11,7 +11,7 @@ from services.service import addTwitchName, getTwitchName
 from states.userSettings import UserSetting
 
 from keyboards.default.user import getUserKeyboard
-from keyboards.inline.admin import gameData, getCancelKeyboard
+from keyboards.inline.admin import *
 
 
 async def anti_flood(*args, **kwargs):
@@ -23,7 +23,7 @@ async def anti_flood(*args, **kwargs):
 @dp.message_handler(state=UserSetting.TwitchName)
 async def add_twitch_name(message: types.Message, state: FSMContext):
     addTwitchName(message.chat.id, message.text)
-    await message.answer(SET_NICKNAME + f"{getTwitchName(message.from_user.id)}", reply_markup=await getUserKeyboard())
+    await message.answer(SET_NICKNAME + f"{getTwitchName(message.from_user.id)}", reply_markup=await getPlayKeyboard())
     await message.delete()
     await state.finish()
 
@@ -33,6 +33,7 @@ async def user_connect(message: types.Message):
     await message.delete()
     await message.answer(ENTER_TWITCH_NICKNAME, reply_markup=await getCancelKeyboard())
     await UserSetting.TwitchName.set()
+
 
 @dp.callback_query_handler(gameData.filter(action="cancel"), state=UserSetting.TwitchName)
 async def cancel_change_twitch(call: types.CallbackQuery, state: FSMContext):
