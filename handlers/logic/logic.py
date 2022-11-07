@@ -12,7 +12,7 @@ from services.service import userExists, addUser, getTwitchName, getMoneyUserStr
 from states.userSettings import UserSetting
 
 
-@dp.message_handler(Text(equals="asd"), state=None)
+@dp.message_handler(Text(equals="aasd"), state=None)
 async def asd(message: types.Message):
     await message.delete()
     await message.answer(getMoneyUserString(message.chat.id))
