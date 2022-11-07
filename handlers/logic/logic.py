@@ -11,6 +11,10 @@ from keyboards.default.user import getUserKeyboard
 from services.service import userExists, addUser, getTwitchName, getMoneyUserString
 from states.userSettings import UserSetting
 
+async def anti_flood(*args, **kwargs):
+    message = args[0]
+    await message.delete()
+    await message.answer("Защита от спама, подождите 25 сек")
 
 @dp.message_handler(Text(equals="aasd"), state=None)
 async def asd(message: types.Message):
