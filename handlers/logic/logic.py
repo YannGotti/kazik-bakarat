@@ -12,7 +12,7 @@ from keyboards.default.user import getUserKeyboard
 from states.userSettings import UserSetting
 from keyboards.inline.admin import *
 
-from services.service import userExists, addUser, getTwitchName, getMoneyUserString
+from services.service import *
 
 async def anti_flood(*args, **kwargs):
     message = args[0]
@@ -21,10 +21,24 @@ async def anti_flood(*args, **kwargs):
 
 @dp.callback_query_handler(gameData.filter(action="play"), state=None)
 async def play_game(call: types.CallbackQuery, state: FSMContext):
-    await UserSetting.IsGaming.set()
-    await call.message.edit_text("Иasdasd")
 
-@dp.message_handler(state=UserSetting.IsGaming)
-async def game_start(call: types.CallbackQuery, state: FSMContext):
-    await call.answer("asd")
-    await state.finish
+    await call.message.edit_text(await select_updated_data(), reply_markup = await getBetsKeyboard())
+
+
+
+    await UserSetting.IsGaming.set()
+
+@dp.callback_query_handler(gameData.filter(action="red"), state=UserSetting.IsGaming)
+async def red_bet(call: types.CallbackQuery, state: FSMContext):
+    print("Asd")
+    await call.message.answer("Красное")
+    await call.answer()
+
+@dp.callback_query_handler(gameData.filter(action="cancel"), state=UserSetting.IsGaming)
+async def red_bet(call: types.CallbackQuery, state: FSMContext):
+    await call.message.edit_text("Вы вышли из игры", reply_markup = await getPlayKeyboard())
+    await state.finish()
+    
+
+async def select_updated_data():
+    return "Asd"

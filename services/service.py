@@ -13,29 +13,29 @@ session = Session(bind=engine)
 # Game #
 def addGame():
 
-    if session.query(Game.session).count() > 0:
+    if session.query(Game.isBet).count() > 0:
         return
 
     session.add(Game(
-        session=False
+        isBet=False
     ))
 
     session.commit()
 
 
-def startSessionGame():
-    session.query(Game).filter(User.session == False).update({'session': True})
+def OpenBet():
+    session.query(Game).filter(User.isBet == False).update({'isBet': True})
     session.commit()
 
 
 
-def stopSessionGame():
-    session.query(Game).filter(User.session == True).update({'session': False})
+def Closebet():
+    session.query(Game).filter(User.isBet == True).update({'isBet': False})
     session.commit()
 
 @cache(5)
-def isGameStarted():
-    return session.scalars(session.query(Game.session)).first()
+def isBetStarted():
+    return session.scalars(session.query(Game.isBet)).first()
 
 
 # User #

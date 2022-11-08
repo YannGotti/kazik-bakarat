@@ -19,12 +19,14 @@ class User(Base):
     chat_id = Column(BigInteger(), nullable=False)
     twitch_name = Column(String(100), nullable=True)
     money = Column(BigInteger(), nullable=False, default=300000)
+    select_color = Column(String(100), nullable=True)
+    bet = Column(BigInteger(), nullable=True)
 
 
 class Game(Base):
     __tablename__ = 'game'
     id = Column(Integer(), primary_key=True)
     win_color = Column(String(100), nullable=True)
-    session = Column(Boolean, nullable=False, default=False)
+    isBet = Column(Boolean, nullable=False, default=False)
 
 Base.metadata.create_all(engine)

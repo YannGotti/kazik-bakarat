@@ -36,6 +36,6 @@ async def user_connect(message: types.Message):
 
 
 @dp.callback_query_handler(gameData.filter(action="cancel"), state=UserSetting.TwitchName)
-async def cancel_change_twitch(call: types.CallbackQuery, state: FSMContext):
+async def cancel_game(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text("Изменения отменены")
     await state.finish()
