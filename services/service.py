@@ -65,3 +65,29 @@ def getMoneyUserInteger(chat_id):
 def getMoneyUserString(chat_id):
     money = session.query(User.money).filter(User.chat_id == chat_id).first()[0]
     return '$ {:,.2f}'.format(money).replace('$-', '-$')
+
+def getColorBetUser(chat_id):
+    return session.query(User.select_color).filter(User.chat_id == chat_id).first()[0]
+
+def setColorBetUser(chat_id, color):
+    session.query(User).filter(User.chat_id == chat_id).update({'select_color': color})
+
+def getBetUser(chat_id):
+    return session.query(User.bet).filter(User.chat_id == chat_id).first()[0]
+
+def updateBetUser(chat_id, bet):
+    current_money = session.query(User.money).filter(User.chat_id == chat_id).first()[0]
+    
+    current_bet = getBetUser(chat_id)
+
+    money = current_money - bet
+    new_bet = int(current_bet) +  bet
+
+    session.query(User).filter(User.chat_id == chat_id).update({'money': money})
+    session.query(User).filter(User.chat_id == chat_id).update({'bet': new_bet})
+
+    session.commit()
+
+def startGameUser(chat_id):
+    session.query(User).filter(User.chat_id == chat_id).update({'select_color': "Нет"})
+    session.query(User).filter(User.chat_id == chat_id).update({'bet': 0})
