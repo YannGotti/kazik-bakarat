@@ -23,66 +23,116 @@ async def anti_flood(*args, **kwargs):
 async def play_game(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     startGameUser(chat_id)
-    await call.message.edit_text(await select_updated_data(chat_id), reply_markup = await getBetsKeyboard())
+    await call.message.edit_text(await select_updated_data(chat_id, IF_BET_SETUP), reply_markup = await getBetsKeyboard())
     await UserSetting.IsGaming.set()
 
 @dp.callback_query_handler(gameData.filter(action="red"), state=UserSetting.IsGaming)
 async def red_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
 
+    if not isBetStarted():
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, BETS_NOT_OPEN), reply_markup = await getBetsKeyboard())
+        except:
+            print("not bug")
+        await call.answer()
+        return
+        
+
     color_selected = getColorBetUser(chat_id)
 
     if not color_selected == "♦":
-        await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
+        except:
+            print("not bug")
         await call.answer()
     
     if color_selected == "Нет" or color_selected == "♦":
         setColorBetUser(chat_id, "♦")
-        await call.message.edit_text(await select_updated_data(chat_id, UP_BET), reply_markup = await getBetsValuesKeyboard())
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, UP_BET), reply_markup = await getBetsValuesKeyboard())
+        except:
+            print("not bug")
         await call.answer()
 
 @dp.callback_query_handler(gameData.filter(action="blue"), state=UserSetting.IsGaming)
 async def blue_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
 
+    if not isBetStarted():
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, BETS_NOT_OPEN), reply_markup = await getBetsKeyboard())
+        except:
+            print("not bug")
+        await call.answer()
+        return
+
+
     color_selected = getColorBetUser(chat_id)
 
     if not color_selected == "♣":
-        await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
+        except:
+            print("not bug")
         await call.answer()
 
     
     if color_selected == "Нет" or color_selected == "♣":
         setColorBetUser(chat_id, "♣")
-        await call.message.edit_text(await select_updated_data(chat_id, UP_BET), reply_markup = await getBetsValuesKeyboard())
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, UP_BET), reply_markup = await getBetsValuesKeyboard())
+        except:
+            print("not bug")
         await call.answer()
 
 @dp.callback_query_handler(gameData.filter(action="green"), state=UserSetting.IsGaming)
 async def green_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
 
+    if not isBetStarted():
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, BETS_NOT_OPEN), reply_markup = await getBetsKeyboard())
+        except:
+            print("not bug")
+        await call.answer()
+        return
+
     color_selected = getColorBetUser(chat_id)
 
     if not color_selected == "❇":
-        await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
+        except:
+            print("not bug")
         await call.answer()
 
     if color_selected == "Нет" or color_selected == "❇":
         setColorBetUser(chat_id, "❇")
-        await call.message.edit_text(await select_updated_data(chat_id, UP_BET), reply_markup = await getBetsValuesKeyboard())
+        try:
+            await call.message.edit_text(await select_updated_data(chat_id, UP_BET), reply_markup = await getBetsValuesKeyboard())
+        except:
+            print("not bug")
         await call.answer()
 
 @dp.callback_query_handler(gameData.filter(action="back"), state=UserSetting.IsGaming)
 async def red_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     setColorBetUser(chat_id, "Нет")
-    await call.message.edit_text(await select_updated_data(chat_id), reply_markup = await getBetsKeyboard())
+    try:
+        await call.message.edit_text(await select_updated_data(chat_id), reply_markup = await getBetsKeyboard())
+    except:
+            print("not bug")
 
 
 @dp.callback_query_handler(gameData.filter(action="cancel"), state=UserSetting.IsGaming)
 async def red_bet(call: types.CallbackQuery, state: FSMContext):
     setColorBetUser(call.message.chat.id, "Нет")
-    await call.message.edit_text("Вы вышли из игры", reply_markup = await getPlayKeyboard())
+    try:
+        await call.message.edit_text("Вы вышли из игры", reply_markup = await getPlayKeyboard())
+    except:
+        print("not bug")
     await state.finish()
 
 
@@ -92,7 +142,10 @@ async def red_bet(call: types.CallbackQuery, state: FSMContext):
 async def up_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     updateBetUser(chat_id, 100)
-    await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    try:
+        await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    except:
+        print("not bug")
     await call.answer()
 
 
@@ -100,14 +153,20 @@ async def up_bet(call: types.CallbackQuery, state: FSMContext):
 async def up_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     updateBetUser(chat_id, 1000)
-    await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    try:
+        await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    except:
+        print("not bug")
     await call.answer()
 
 @dp.callback_query_handler(gameData.filter(action="10000"), state=UserSetting.IsGaming)
 async def up_bet(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
     updateBetUser(chat_id, 10000)
-    await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    try:
+        await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    except:
+        print("not bug")
     await call.answer()
 
 
