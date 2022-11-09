@@ -18,7 +18,7 @@ class User(Base):
     id = Column(Integer(), primary_key=True)
     chat_id = Column(BigInteger(), nullable=False)
     twitch_name = Column(String(100), nullable=True)
-    money = Column(BigInteger(), nullable=False, default=50000)
+    money = Column(BigInteger(), nullable=False, default=10000)
     select_color = Column(String(100), nullable=False, default="Нет")
     bet = Column(BigInteger(), nullable=False, default = 0)
     current_message_game_id = Column(BigInteger(), nullable=False, default = 0)

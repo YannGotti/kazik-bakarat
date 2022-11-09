@@ -43,6 +43,10 @@ async def user_connect(message: types.Message):
 @dp.callback_query_handler(gameData.filter(action="play"), state=None)
 async def play_game(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
+
+    if getMoneyUserInteger(chat_id) < 1000:
+        updateMoney(chat_id, 1000)
+
     if getBetUser(call.message.chat.id) == 0:
         startGameUser(chat_id, call.message.message_id)
     else: 
@@ -71,12 +75,10 @@ async def red_bet(call: types.CallbackQuery, callback_data: typing.Dict[str, str
         await call.answer()
         return
 
-
     if selected_color != color_db:
         await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
         await call.answer()
         return
-
 
 
 # TODO UP_BET
@@ -176,9 +178,6 @@ async def red_bet(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text("Вы вышли из игры", reply_markup = await getPlayKeyboard())
     await state.finish()
-
-
-
 
 
 @dp.errors_handler(exception=MessageNotModified)
