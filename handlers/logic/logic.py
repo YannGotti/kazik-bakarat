@@ -76,7 +76,8 @@ async def red_bet(call: types.CallbackQuery, callback_data: typing.Dict[str, str
         await call.message.edit_text(await select_updated_data(chat_id, COLOR_BET_SELECTED), reply_markup = await getBetsKeyboard())
         await call.answer()
         return
-    
+
+
 
 # TODO UP_BET
 
@@ -95,6 +96,52 @@ async def up_bet(call: types.CallbackQuery, callback_data: typing.Dict[str, str]
     await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
     await call.answer()
 
+
+@dp.callback_query_handler(gameData.filter(action="ALL"), state=UserSetting.IsGaming)
+async def all_bet(call: types.CallbackQuery, state: FSMContext):
+    chat_id = call.message.chat.id
+
+    setMessageIdUser(chat_id, call.message.message_id)
+
+    allBetUser(chat_id)
+    await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+    await call.answer()
+
+@dp.callback_query_handler(gameData.filter(action="custom"), state=UserSetting.IsGaming)
+async def custom_bet(call: types.CallbackQuery, state: FSMContext):
+    chat_id = call.message.chat.id
+    
+    await state.finish()
+    await UserSetting.CustomBetUser.set()
+    
+    await call.message.edit_text(INPUT_BET)
+    await call.answer()
+
+@dp.message_handler(state=UserSetting.CustomBetUser)
+async def input_bet(message: types.Message, state: FSMContext):
+    await message.delete()
+    chat_id = message.chat.id
+
+    try:
+        bet = int(message.text)
+    except:
+        await message.answer(ERROR_UNPUT_BET)
+        return
+
+    if getMoneyUserInteger(chat_id) < int(bet):
+        await message.answer(await select_updated_data(chat_id, NOT_MONEY_USER), reply_markup = await getBetsKeyboard())
+        await state.finish()
+        await UserSetting.IsGaming.set()
+        return
+
+    updateBetUser(chat_id, int(bet))
+    mess = await message.answer(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
+
+    setMessageIdUser(chat_id, mess.message_id)
+
+    await state.finish()
+    await UserSetting.IsGaming.set()
+    
 
 async def select_updated_data(chat_id, invalidate = " "):
     twitch_name = getTwitchName(chat_id)
@@ -129,6 +176,9 @@ async def red_bet(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.edit_text("Вы вышли из игры", reply_markup = await getPlayKeyboard())
     await state.finish()
+
+
+
 
 
 @dp.errors_handler(exception=MessageNotModified)

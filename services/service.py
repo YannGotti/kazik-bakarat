@@ -108,6 +108,16 @@ def updateBetUser(chat_id, bet):
 
     session.commit()
 
+def allBetUser(chat_id):
+    current_money = session.query(User.money).filter(User.chat_id == chat_id).first()[0]
+    current_bet = session.query(User.bet).filter(User.chat_id == chat_id).first()[0]
+
+    bet = current_money + current_bet
+    session.query(User).filter(User.chat_id == chat_id).update({'money': 0})
+    session.query(User).filter(User.chat_id == chat_id).update({'bet': bet})
+
+    session.commit()
+
 def startGameUser(chat_id, message_id):
     session.query(User).filter(User.chat_id == chat_id).update({'select_color': "Нет"})
     session.query(User).filter(User.chat_id == chat_id).update({'bet': 0})
