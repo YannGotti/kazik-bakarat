@@ -46,11 +46,12 @@ async def close_bet(call: types.CallbackQuery, callback_data: typing.Dict[str, s
 
             updateMoney(chat_id, win_bet)
 
-            await bot.edit_message_text(chat_id= chat_id, message_id= message_id, text= await select_updated_data(
-                chat_id,
-                BET_CLOSE_USER + f" <b>{color_win}</b>\n" \
-                f"Ваш выигрыш <b>$ {win_bet}</b>"),
-            reply_markup= await getBetsKeyboard())
+            if message_id != 0:
+                await bot.edit_message_text(chat_id= chat_id, message_id= message_id, text= await select_updated_data(
+                    chat_id,
+                    BET_CLOSE_USER + f" <b>{color_win}</b>\n" \
+                    f"Ваш выигрыш <b>$ {win_bet}</b>"),
+                reply_markup= await getBetsKeyboard())
 
         Closebet()
         await call.message.edit_text("Ставки закрыты", reply_markup = await getAdminPanelButtons())
@@ -66,6 +67,12 @@ async def win_color(call: types.CallbackQuery, callback_data: typing.Dict[str, s
     setColorWin(color_bet)
     await call.message.edit_text(f"Цвет изменен на {color_bet}", reply_markup = await getAdminPanelButtons())
     await call.answer()
+
+@dp.callback_query_handler(adminData.filter(action="exit"), state=AdminSettings.Admin)
+async def exit_admin_panel(call: types.CallbackQuery, state: FSMContext):
+    await call.message.edit_text("Вышел из админки")
+    await state.finish()
+
 
 @dp.errors_handler(exception=MessageNotModified)
 async def message_not_modified_handler(update, error):

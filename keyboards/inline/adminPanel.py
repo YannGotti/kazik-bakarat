@@ -20,7 +20,8 @@ async def getAdminPanelButtons():
             InlineKeyboardButton('♣', callback_data=adminData.new(action="♣", message_id=1))
         ],
         [
-            startStopGame
+            startStopGame,
+            InlineKeyboardButton('Выйти', callback_data=adminData.new(action="exit", message_id=1))
         ]
     ]
 

@@ -43,7 +43,11 @@ async def user_connect(message: types.Message):
 @dp.callback_query_handler(gameData.filter(action="play"), state=None)
 async def play_game(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
-    startGameUser(chat_id, call.message.message_id)
+    if getBetUser(call.message.chat.id) == 0:
+        startGameUser(chat_id, call.message.message_id)
+    else: 
+        setMessageIdUser(call.message.chat.id, call.message.message_id)
+    
     await call.message.edit_text(await select_updated_data(chat_id, IF_BET_SETUP), reply_markup = await getBetsKeyboard())
     await UserSetting.IsGaming.set()
 
@@ -82,6 +86,11 @@ async def up_bet(call: types.CallbackQuery, callback_data: typing.Dict[str, str]
     setMessageIdUser(chat_id, call.message.message_id)
     bet = callback_data['action']
 
+    if getMoneyUserInteger(chat_id) < int(bet):
+        await call.message.edit_text(await select_updated_data(chat_id, NOT_MONEY_USER), reply_markup = await getBetsKeyboard())
+        await call.answer()
+        return
+
     updateBetUser(chat_id, int(bet))
     await call.message.edit_text(await select_updated_data(chat_id, BET_IS_UP), reply_markup = await getBetsKeyboard())
     await call.answer()
@@ -113,7 +122,11 @@ async def red_bet(call: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(gameData.filter(action="cancel"), state=UserSetting.IsGaming)
 async def red_bet(call: types.CallbackQuery, state: FSMContext):
-    stopGameUser(call.message.chat.id)
+    if getBetUser(call.message.chat.id) == 0:
+        stopGameUser(call.message.chat.id)
+    else: 
+        setMessageIdUser(call.message.chat.id)
+
     await call.message.edit_text("Вы вышли из игры", reply_markup = await getPlayKeyboard())
     await state.finish()
 

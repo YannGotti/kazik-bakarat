@@ -28,7 +28,7 @@ def OpenBet():
     session.commit()
 
 def getChatsId():
-    return session.scalars(session.query(User.chat_id).filter(User.current_message_game_id != 0)).all()
+    return session.scalars(session.query(User.chat_id).filter(User.bet != 0)).all()
 
 
 def getMessageId(chat_id):
@@ -114,7 +114,7 @@ def startGameUser(chat_id, message_id):
     session.query(User).filter(User.chat_id == chat_id).update({'current_message_game_id': message_id})
     session.commit()
 
-def setMessageIdUser(chat_id, message_id):
+def setMessageIdUser(chat_id, message_id = 0):
     session.query(User).filter(User.chat_id == chat_id).update({'current_message_game_id': message_id})
 
 def stopGameUser(chat_id):
