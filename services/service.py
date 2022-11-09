@@ -33,7 +33,7 @@ def Closebet():
     session.query(Game).filter(User.isBet == True).update({'isBet': False})
     session.commit()
 
-@cache(5)
+@cache(1)
 def isBetStarted():
     return session.scalars(session.query(Game.isBet)).first()
 
@@ -66,6 +66,7 @@ def getMoneyUserString(chat_id):
     money = session.query(User.money).filter(User.chat_id == chat_id).first()[0]
     return '$ {:,.2f}'.format(money).replace('$-', '-$')
 
+@cache(1)
 def getColorBetUser(chat_id):
     return session.query(User.select_color).filter(User.chat_id == chat_id).first()[0]
 

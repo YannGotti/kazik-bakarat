@@ -11,9 +11,9 @@ async def getPlayKeyboard():
 
 async def getBetsKeyboard():
     cancel = InlineKeyboardButton('Отмена', callback_data=gameData.new(action="cancel", message_id=1))
-    redButton = InlineKeyboardButton('♦ Красное', callback_data=gameData.new(action="red", message_id=1))
-    greenButton = InlineKeyboardButton('❇ Ничья', callback_data=gameData.new(action="green", message_id=1))
-    blueButton = InlineKeyboardButton('♣ Синее', callback_data=gameData.new(action="blue", message_id=1))
+    redButton = InlineKeyboardButton('♦ Красное', callback_data=gameData.new(action="♦", message_id=1))
+    greenButton = InlineKeyboardButton('❇ Ничья', callback_data=gameData.new(action="❇", message_id=1))
+    blueButton = InlineKeyboardButton('♣ Синее', callback_data=gameData.new(action="♣", message_id=1))
     return InlineKeyboardMarkup(row_width=2).row(redButton, greenButton, blueButton, cancel)
 
 async def getBetsValuesKeyboard():
