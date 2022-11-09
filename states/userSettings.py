@@ -5,3 +5,6 @@ class UserSetting(StatesGroup):
     TwitchName = State()
     IsGaming = State()
 
+class AdminSettings(StatesGroup):
+    Admin = State()
+
