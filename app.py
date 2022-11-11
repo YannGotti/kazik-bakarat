@@ -9,6 +9,7 @@ from services.service import *
 async def set_default_commands(dp_local):
     await dp_local.bot.set_my_commands([
         BotCommand("play", "Играть"),
+        BotCommand("shop", "Магазин"),
         BotCommand("profile", "Вызвать меню профиля"),
         BotCommand("change_twitch", "Поменять никнейм Twitch")
     ])

@@ -29,7 +29,7 @@ async def anti_flood(*args, **kwargs):
     await message.delete()
     await message.edit_text(ANTI_FLOOD)
 
-@dp.message_handler(Text(equals=["/play"]), state=None)
+@dp.message_handler(commands=['play'], state=None)
 @dp.throttled(anti_flood, rate=1)
 async def user_connect(message: types.Message):
     await message.delete()
@@ -44,8 +44,11 @@ async def user_connect(message: types.Message):
 async def play_game(call: types.CallbackQuery, state: FSMContext):
     chat_id = call.message.chat.id
 
-    if getMoneyUserInteger(chat_id) < 1000:
-        updateMoney(chat_id, 1000)
+    try:
+        if getMoneyUserInteger(chat_id) < 1000:
+            updateMoney(chat_id, 1000)
+    except:
+        print("Erroyr brooy")
 
     if getBetUser(call.message.chat.id) == 0:
         startGameUser(chat_id, call.message.message_id)
